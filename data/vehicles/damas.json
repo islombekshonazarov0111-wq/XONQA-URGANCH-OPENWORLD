@@ -1,0 +1,12 @@
+{
+  "id": "damas",
+  "name": "Damas",
+  "mass_kg": 850,
+  "power_hp": 38,
+  "torque_nm": 62,
+  "drive": "RWD",
+  "gearbox": "manual",
+  "gears": 5,
+  "zero_100_target_s": 30.0,
+  "final_drive": 5.12
+}

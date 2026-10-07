@@ -1,0 +1,13 @@
+workflows:
+  android-godot:
+    name: Android Godot Build
+    max_build_duration: 60
+    environment:
+      java: 17
+    scripts:
+      - name: Project check
+        script: |
+          test -f project.godot
+          echo "Godot project structure OK"
+    artifacts:
+      - build/*.apk

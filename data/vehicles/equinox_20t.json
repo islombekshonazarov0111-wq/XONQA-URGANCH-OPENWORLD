@@ -1,0 +1,12 @@
+{
+  "id": "equinox_20t",
+  "name": "Equinox 2.0 Turbo",
+  "mass_kg": 1710,
+  "power_hp": 252,
+  "torque_nm": 353,
+  "drive": "AWD",
+  "gearbox": "automatic",
+  "gears": 9,
+  "zero_100_target_s": 6.4,
+  "final_drive": 3.17
+}

@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[node name="SharkNightClubInterior" type="Node3D"]
+
+[node name="InteriorPlaceholder" type="MeshInstance3D" parent="."]
+
+[node name="ClubUI" type="CanvasLayer" parent="."]
+
+[node name="Status" type="Label" parent="ClubUI"]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 520.0
+offset_bottom = 55.0
+text = "Night Club Interior — production asset pending"

@@ -1,0 +1,12 @@
+{
+  "id": "nexia3",
+  "name": "Nexia 3",
+  "mass_kg": 1190,
+  "power_hp": 106,
+  "torque_nm": 141,
+  "drive": "FWD",
+  "gearbox": "automatic",
+  "gears": 6,
+  "zero_100_target_s": 12.3,
+  "final_drive": 3.72
+}

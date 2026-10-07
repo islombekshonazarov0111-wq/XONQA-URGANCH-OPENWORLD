@@ -1,0 +1,12 @@
+{
+  "id": "spark",
+  "name": "Spark",
+  "mass_kg": 950,
+  "power_hp": 85,
+  "torque_nm": 112,
+  "drive": "FWD",
+  "gearbox": "automatic",
+  "gears": 4,
+  "zero_100_target_s": 12.5,
+  "final_drive": 4.14
+}

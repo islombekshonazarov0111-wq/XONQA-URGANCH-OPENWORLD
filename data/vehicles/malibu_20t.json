@@ -1,0 +1,12 @@
+{
+  "id": "malibu_20t",
+  "name": "Malibu 2.0 Turbo",
+  "mass_kg": 1530,
+  "power_hp": 250,
+  "torque_nm": 353,
+  "drive": "FWD",
+  "gearbox": "automatic",
+  "gears": 9,
+  "zero_100_target_s": 6.5,
+  "final_drive": 2.89
+}

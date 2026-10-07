@@ -1,0 +1,12 @@
+{
+  "id": "gentra",
+  "name": "Gentra",
+  "mass_kg": 1245,
+  "power_hp": 107,
+  "torque_nm": 141,
+  "drive": "FWD",
+  "gearbox": "automatic",
+  "gears": 6,
+  "zero_100_target_s": 13.0,
+  "final_drive": 3.72
+}
