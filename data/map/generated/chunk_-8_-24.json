@@ -1,0 +1,1 @@
+{"roads": [{"osm_id": 763019323, "points": [[-3883.38, -11867.54], [-3840.45, -11896.11]], "tags": {"bridge": "yes", "highway": "residential", "layer": "1"}}, {"osm_id": 763019324, "points": [[-3840.45, -11896.11], [-3751.03, -11953.25], [-3613.29, -12053.25], [-3074.92, -12813.9]], "tags": {"highway": "residential"}}], "buildings": [], "waterways": []}

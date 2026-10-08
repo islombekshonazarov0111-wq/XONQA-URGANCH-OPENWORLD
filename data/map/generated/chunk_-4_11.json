@@ -1,0 +1,1 @@
+{"roads": [{"osm_id": 907571465, "points": [[-1760.2, 5502.6], [-1723.94, 5424.39], [-1665.99, 5299.39]], "tags": {"highway": "service", "name": "MADIR", "name:uz-Cyrl": "МАДИР"}}, {"osm_id": 907571473, "points": [[-1562.09, 5529.87], [-1266.85, 5657.04]], "tags": {"highway": "residential", "name": "MADIR", "name:uz-Cyrl": "МАДИР"}}], "buildings": [], "waterways": []}

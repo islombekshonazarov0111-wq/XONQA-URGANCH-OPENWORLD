@@ -1,0 +1,1 @@
+{"roads": [{"osm_id": 331498206, "points": [[4765.71, 2719.52], [4730.52, 2760.28]], "tags": {"bridge": "yes", "highway": "tertiary", "layer": "1"}}, {"osm_id": 331498222, "points": [[4730.52, 2760.28], [4333.76, 3216.15], [4295.06, 3259.99]], "tags": {"highway": "tertiary"}}], "buildings": [], "waterways": []}

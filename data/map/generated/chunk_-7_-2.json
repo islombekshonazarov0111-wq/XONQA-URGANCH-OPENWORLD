@@ -1,0 +1,1 @@
+{"roads": [], "buildings": [], "waterways": [{"osm_id": 1184182412, "points": [[-3161.89, -505.27], [-3369.17, -209.63]], "tags": {"waterway": "canal"}}, {"osm_id": 1184182413, "points": [[-3156.36, -513.18], [-3161.89, -505.27]], "tags": {"layer": "-1", "tunnel": "culvert", "waterway": "canal"}}]}

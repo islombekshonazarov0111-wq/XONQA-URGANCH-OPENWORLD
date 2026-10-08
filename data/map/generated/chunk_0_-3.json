@@ -1,0 +1,1 @@
+{"roads": [{"osm_id": 1501800045, "points": [[261.73, -1348.57], [310.89, -1379.92], [677.1, -1600.02], [1093.17, -1861.43], [1097.45, -1876.38]], "tags": {"highway": "unclassified"}}, {"osm_id": 1501800046, "points": [[236.74, -1329.68], [261.73, -1348.57]], "tags": {"bridge": "yes", "highway": "unclassified", "layer": "1"}}], "buildings": [], "waterways": []}

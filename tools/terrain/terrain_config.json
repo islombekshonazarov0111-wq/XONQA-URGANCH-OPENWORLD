@@ -1,0 +1,15 @@
+{
+  "chunk_size_m": 500,
+  "mesh_resolution": 32,
+  "height_scale": 1.0,
+  "base_y": 0.0,
+  "use_real_elevation": true,
+  "smooth_passes": 2,
+  "collision_resolution": 16,
+  "lod": {
+    "near": 32,
+    "medium": 16,
+    "far": 8
+  },
+  "shadows": false
+}
