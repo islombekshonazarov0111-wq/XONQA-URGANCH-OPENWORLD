@@ -95,11 +95,46 @@ add_child(root)
 var ground := ground_builder.build_ground(key)
 root.add_child(ground)
 
+# Chunkdagi obyektlar uchun umumiy balandlik manbasi
+var terrain_height := ground_builder.terrain
+
 for road in parsed.get("roads", []):
 var mesh := road_builder.build_road(
 road.get("points", []),
 road.get("tags", {})
 )
+
+# Yo'l meshini relyefga moslashtirish
+if mesh.mesh != null:
+var arrays := mesh.mesh.surface_get_arrays(0)
+var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+
+for i in range(vertices.size()):
+var v := vertices[i]
+v.y += terrain_height.get_height(v.x, v.z)
+vertices[i] = v
+
+arrays[Mesh.ARRAY_VERTEX] = vertices
+
+var adjusted := ArrayMesh.new()
+adjusted.add_surface_from_arrays(
+Mesh.PRIMITIVE_TRIANGLES, arrays
+)
+# Asfalt materialini saqlash
+var old_material := mesh.mesh.surface_get_material(0)
+if old_material != null:
+adjusted.surface_set_material(0, old_material)
+
+mesh.mesh = adjusted
+mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+
+# Eski collision shaklini olib tashlash
+for child in mesh.get_children():
+if child is StaticBody3D:
+child.queue_free()
+
+# Yangi relyefga mos collision
+mesh.create_trimesh_collision()
 
 root.add_child(mesh)
 
@@ -109,6 +144,14 @@ building.get("points", []),
 building.get("tags", {})
 )
 
+# Binoni yer balandligiga joylashtirish
+var building_points: Array = building.get("points", [])
+if building_points.size() > 0:
+var bx := float(building_points[0][0])
+var bz := float(building_points[0][1])
+building_mesh.position.y = terrain_height.get_height(bx, bz)
+
+building_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 root.add_child(building_mesh)
 
 for waterway in parsed.get("waterways", []):
@@ -117,6 +160,30 @@ waterway.get("points", []),
 waterway.get("tags", {})
 )
 
+# Suv meshining har bir nuqtasini relyefga moslash
+if water_mesh.mesh != null:
+var arrays := water_mesh.mesh.surface_get_arrays(0)
+var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+
+for i in range(vertices.size()):
+var v := vertices[i]
+v.y += terrain_height.get_height(v.x, v.z)
+vertices[i] = v
+
+arrays[Mesh.ARRAY_VERTEX] = vertices
+
+var adjusted_water := ArrayMesh.new()
+adjusted_water.add_surface_from_arrays(
+Mesh.PRIMITIVE_TRIANGLES, arrays
+)
+# Suv materialini saqlash
+var water_material := water_mesh.mesh.surface_get_material(0)
+if water_material != null:
+adjusted_water.surface_set_material(0, water_material)
+
+water_mesh.mesh = adjusted_water
+
+water_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 root.add_child(water_mesh)
 
 loaded_chunks[key] = root

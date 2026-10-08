@@ -73,7 +73,7 @@ mesh_instance.mesh = mesh
 mesh_instance.material_override = road_material
 
 if mesh != null:
-mesh_instance.create_trimesh_collision()
+# Collision MapChunkStreamer ichida yaratiladi
 
 return mesh_instance
 
