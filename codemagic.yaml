@@ -55,11 +55,13 @@ workflows:
 
         '
     - name: Parse project
-      script: 'set -e
-
-        "$HOME/godot/godot" --headless --editor --path . --quit --verbose
-
-        '
+      script: "set -eu\ntest -f project.godot\ngrep -q '^textures/vram_compression/import_etc2_astc=true$'\
+        \ project.godot\n! grep -q '^gradle_build/min_sdk=' export_presets.cfg\n!\
+        \ grep -q '^gradle_build/target_sdk=' export_presets.cfg\n\"$HOME/godot/godot\"\
+        \ --headless --editor --path . --quit 2>&1 | tee /tmp/godot-check.log\nif\
+        \ grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Cannot' /tmp/godot-check.log;\
+        \ then\n  echo \"GODOT TEKSHIRUVIDA XATO\"\n  exit 1\nfi\necho \"GODOT DASTLABKI\
+        \ TEKSHIRUV O'TDI\"\n"
     - name: Export Android debug APK
       script: 'set -e
 
