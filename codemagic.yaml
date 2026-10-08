@@ -1,13 +1,45 @@
 workflows:
   android-godot:
-    name: Android Godot Build
+    name: Xonqa Urganch Android Debug APK
     max_build_duration: 60
     environment:
       java: 17
+      vars:
+        GODOT_VERSION: "4.7.2"
     scripts:
-      - name: Project check
+      - name: Validate project files
         script: |
+          set -e
           test -f project.godot
-          echo "Godot project structure OK"
+          test -f export_presets.cfg
+          python3 tools/validate_project.py
+      - name: Install Godot and matching export templates
+        script: |
+          set -e
+          mkdir -p "$HOME/godot" "$HOME/.local/share/godot/export_templates/4.7.2.stable"
+          curl -L --fail --retry 3 -o /tmp/godot.zip "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          unzip -q /tmp/godot.zip -d "$HOME/godot"
+          GODOT_BIN=$(find "$HOME/godot" -maxdepth 1 -type f -name 'Godot_v4.7.2-stable_linux.x86_64*' | head -n 1)
+          chmod +x "$GODOT_BIN"
+          ln -sf "$GODOT_BIN" "$HOME/godot/godot"
+          curl -L --fail --retry 3 -o /tmp/templates.tpz "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz"
+          unzip -q /tmp/templates.tpz -d /tmp/godot-templates
+          cp -R /tmp/godot-templates/templates/. "$HOME/.local/share/godot/export_templates/4.7.2.stable/"
+          "$HOME/godot/godot" --version
+      - name: Parse project
+        script: |
+          set -e
+          "$HOME/godot/godot" --headless --editor --path . --quit --verbose
+      - name: Export Android debug APK
+        script: |
+          set -e
+          mkdir -p build
+          keytool -genkeypair -v -keystore /tmp/xonqa-debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Xonqa Urganch,C=UZ"
+          export GODOT_ANDROID_KEYSTORE_DEBUG_PATH=/tmp/xonqa-debug.keystore
+          export GODOT_ANDROID_KEYSTORE_DEBUG_USER=androiddebugkey
+          export GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD=android
+          "$HOME/godot/godot" --headless --path . --export-debug "Android Debug" build/xonqa-urganch-debug.apk
+          test -s build/xonqa-urganch-debug.apk
+          ls -lh build/xonqa-urganch-debug.apk
     artifacts:
       - build/*.apk
