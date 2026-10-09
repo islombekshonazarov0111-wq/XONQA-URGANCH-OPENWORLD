@@ -36,7 +36,15 @@ func _ready() -> void:
     car.name = "DrivablePlaceholderCar"
     add_child(car)
     car.position = Vector3(114.44, 0.85, 295.63)
-    _create_car()
+    # MALIBU_PHYSICS_INTEGRATION
+    var malibu_scene = load("res://scenes/vehicles/Malibu.tscn")
+    if malibu_scene != null:
+        var malibu = malibu_scene.instantiate()
+        add_child(malibu)
+        malibu.global_position = Vector3(114.44, 1.3, 295.63)
+        car.queue_free()
+        car = malibu
+        malibu.set_selector("D")
     _create_forsaj_service()
     var env := Environment.new()
     env.background_mode = Environment.BG_COLOR
@@ -53,6 +61,17 @@ func _ready() -> void:
     _add_button("ORQA", Vector2(-175, -75), "reverse")
     _add_button("CHAP", Vector2(20, -105), "left", true)
     _add_button("ONG", Vector2(140, -105), "right", true)
+    # FORSAJ_GEAR_SELECTOR
+    for mode in ["P", "R", "N", "D"]:
+        var gear_button := Button.new()
+        gear_button.text = mode
+        gear_button.custom_minimum_size = Vector2(70, 55)
+        gear_button.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+        gear_button.position = Vector2(-85, 80 + ["P", "R", "N", "D"].find(mode) * 65)
+        gear_button.add_theme_font_size_override("font_size", 24)
+        $UI.add_child(gear_button)
+        gear_button.pressed.connect(_select_gear.bind(mode))
+
     _refresh()
 
 func _material(color: Color) -> StandardMaterial3D:
@@ -94,10 +113,12 @@ func _box(parent: Node3D, size: Vector3, at: Vector3, mat: Material) -> void:
 func _process(delta: float) -> void:
     var throttle := float(gas or Input.is_action_pressed("ui_up")) - float(reverse or Input.is_action_pressed("ui_down"))
     var steer := float(left or Input.is_action_pressed("ui_left")) - float(right or Input.is_action_pressed("ui_right"))
-    speed = move_toward(speed, throttle * 24.0, delta * (12.0 if throttle != 0.0 else 8.0))
-    yaw += steer * delta * clampf(absf(speed) / 8.0, 0.0, 1.0) * (1.0 if speed >= 0.0 else -1.0)
-    car.rotation.y = yaw
-    car.position += Vector3(sin(yaw), 0, -cos(yaw)) * speed * delta
+    if car is VehicleController:
+        car.set_throttle(maxf(0.0, throttle))
+        car.set_brake(maxf(0.0, -throttle))
+        car.set_steering(-steer)
+        speed = car.linear_velocity.length()
+        yaw = car.rotation.y
     cam.global_position = cam.global_position.lerp(car.global_position + Vector3(-sin(yaw) * 15.0, 10.0, cos(yaw) * 15.0), minf(1.0, delta * 5.0))
     cam.look_at(car.global_position + Vector3.UP * 1.0, Vector3.UP)
     hud.text = "XONQA - URGANCH | %d km/soat | %d xarita bo'lagi" % [roundi(absf(speed) * 3.6), loaded.size()]
@@ -139,6 +160,19 @@ func _load_chunk(k: Vector2i) -> void:
     ground.position = Vector3((k.x + 0.5) * CHUNK_SIZE, -0.1, (k.y + 0.5) * CHUNK_SIZE)
     ground.material_override = ground_mat
     root.add_child(ground)
+    # FORSAJ_PHYSICS_GROUND
+    var ground_body := StaticBody3D.new()
+    root.add_child(ground_body)
+    var ground_collision := CollisionShape3D.new()
+    var ground_shape := BoxShape3D.new()
+    ground_shape.size = Vector3(CHUNK_SIZE, 0.2, CHUNK_SIZE)
+    ground_collision.shape = ground_shape
+    ground_collision.position = Vector3(
+        (k.x + 0.5) * CHUNK_SIZE,
+        -0.2,
+        (k.y + 0.5) * CHUNK_SIZE
+    )
+    ground_body.add_child(ground_collision)
     var path := "res://data/map/generated/chunk_%d_%d.json" % [k.x, k.y]
     if not FileAccess.file_exists(path):
         return
@@ -238,3 +272,8 @@ func _create_forsaj_service() -> void:
     service.add_child(sign_label)
 
     print("FORSAJ servis maketi yaratildi")
+
+
+func _select_gear(mode: String) -> void:
+    if car is VehicleController:
+        car.set_selector(mode)

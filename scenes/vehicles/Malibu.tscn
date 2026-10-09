@@ -1,0 +1,56 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/vehicles/VehicleController.gd" id="1"]
+
+[sub_resource type="BoxShape3D" id="BodyShape"]
+size = Vector3(1.85, 0.7, 4.8)
+
+
+[sub_resource type="BoxMesh" id="CarBodyMesh"]
+size = Vector3(1.85, 0.65, 4.8)
+
+[sub_resource type="StandardMaterial3D" id="CarPaint"]
+albedo_color = Color(0.65, 0.04, 0.06, 1)
+
+[sub_resource type="BoxMesh" id="CabinMesh"]
+size = Vector3(1.55, 0.65, 2.4)
+
+[sub_resource type="StandardMaterial3D" id="Glass"]
+albedo_color = Color(0.08, 0.15, 0.22, 1)
+
+[node name="Malibu20T" type="VehicleBody3D"]
+script = ExtResource("1")
+vehicle_id = "malibu_20t"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BodyShape")
+position = Vector3(0, 0.35, 0)
+
+[node name="FrontLeft" type="VehicleWheel3D" parent="."]
+position = Vector3(-0.78, -0.15, -1.35)
+use_as_steering = true
+use_as_traction = true
+wheel_radius = 0.345
+
+[node name="FrontRight" type="VehicleWheel3D" parent="."]
+position = Vector3(0.78, -0.15, -1.35)
+use_as_steering = true
+use_as_traction = true
+wheel_radius = 0.345
+
+[node name="RearLeft" type="VehicleWheel3D" parent="."]
+position = Vector3(-0.78, -0.15, 1.35)
+wheel_radius = 0.345
+
+[node name="RearRight" type="VehicleWheel3D" parent="."]
+position = Vector3(0.78, -0.15, 1.35)
+wheel_radius = 0.345
+[node name="BodyVisual" type="MeshInstance3D" parent="."]
+mesh = SubResource("CarBodyMesh")
+material_override = SubResource("CarPaint")
+position = Vector3(0, 0.35, 0)
+
+[node name="CabinVisual" type="MeshInstance3D" parent="."]
+mesh = SubResource("CabinMesh")
+material_override = SubResource("Glass")
+position = Vector3(0, 0.95, 0.15)
