@@ -1,0 +1,36 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.4.1
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Import Godot project
+        run: godot --headless --editor --path . --import
+
+      - name: Prepare export directory
+        run: mkdir -p build
+
+      - name: Export Android debug APK
+        run: |
+          godot --headless --path . \
+            --export-debug "Android Debug" \
+            build/xonqa-urganch-debug.apk
+
+      - name: Verify APK
+        run: test -s build/xonqa-urganch-debug.apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: XONQA-URGANCH-ANDROID
+          path: build/xonqa-urganch-debug.apk
+          if-no-files-found: error
