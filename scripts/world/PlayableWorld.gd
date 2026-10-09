@@ -37,6 +37,7 @@ func _ready() -> void:
     add_child(car)
     car.position = Vector3(114.44, 0.85, 295.63)
     _create_car()
+    _create_forsaj_service()
     var env := Environment.new()
     env.background_mode = Environment.BG_COLOR
     env.background_color = Color(0.55, 0.73, 0.91)
@@ -205,3 +206,35 @@ func _triangles(parent: Node3D, verts: PackedVector3Array, mat: Material) -> voi
     inst.material_override = mat
     inst.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
     parent.add_child(inst)
+
+
+func _create_forsaj_service() -> void:
+    var service := Node3D.new()
+    service.name = "AVTO_SERVICE_CENTRE_FORSAJ"
+    service.position = Vector3(114.44, 0.0, 315.0)
+    add_child(service)
+
+    var concrete := _material(Color(0.48, 0.48, 0.48))
+    var walls := _material(Color(0.78, 0.79, 0.81))
+    var roof := _material(Color(0.12, 0.18, 0.27))
+    var door := _material(Color(0.17, 0.22, 0.28))
+    var yellow := _material(Color(0.98, 0.72, 0.08))
+
+    _box(service, Vector3(45, 0.15, 35), Vector3(0, 0, 0), concrete)
+    _box(service, Vector3(32, 9, 13), Vector3(0, 4.5, 10), walls)
+    _box(service, Vector3(34, 0.8, 15), Vector3(0, 9.3, 10), roof)
+
+    for x in [-10.0, 0.0, 10.0]:
+        _box(service, Vector3(7, 6, 0.15), Vector3(x, 3.2, 3.4), door)
+
+    _box(service, Vector3(34, 1.4, 0.3), Vector3(0, 10.6, 2.3), yellow)
+
+    var sign_label := Label3D.new()
+    sign_label.text = "AVTO SERVICE CENTRE FORSAJ"
+    sign_label.font_size = 72
+    sign_label.pixel_size = 0.007
+    sign_label.position = Vector3(0, 10.6, 2.05)
+    sign_label.modulate = Color.BLACK
+    service.add_child(sign_label)
+
+    print("FORSAJ servis maketi yaratildi")
