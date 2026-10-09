@@ -35,7 +35,7 @@ func _ready() -> void:
     car = Node3D.new()
     car.name = "DrivablePlaceholderCar"
     add_child(car)
-    car.position = Vector3(100, 0.85, 330)
+    car.position = Vector3(114.44, 0.85, 295.63)
     _create_car()
     var env := Environment.new()
     env.background_mode = Environment.BG_COLOR
