@@ -3,7 +3,7 @@
 config_version=5
 
 [application]
-config/name="Xonqa Urganch Open World"
+config/name="Xorazm Drive - Xonqa Urganch"
 run/main_scene="res://scenes/world/Main.tscn"
 
 [display]
