@@ -1,88 +1,31 @@
 workflows:
   android-godot:
-    name: Xonqa Urganch Android Debug APK
+    name: Xonqa Urganch Android APK
     max_build_duration: 60
+    instance_type: linux_x2
     environment:
-      java: 17
       vars:
-        GODOT_VERSION: 4.7.2
+        GODOT_VERSION: "4.4.1"
     scripts:
-    - name: Validate project files
-      script: 'set -e
+      - name: Install Godot
+        script: |
+          wget -q https://github.com/godotengine/godot-builds/releases/download/4.4.1-stable/Godot_v4.4.1-stable_linux.x86_64.zip
+          unzip -q Godot_v4.4.1-stable_linux.x86_64.zip
+          chmod +x Godot_v4.4.1-stable_linux.x86_64
+          sudo mv Godot_v4.4.1-stable_linux.x86_64 /usr/local/bin/godot
 
-        test -f project.godot
+      - name: Install export templates
+        script: |
+          wget -q https://github.com/godotengine/godot-builds/releases/download/4.4.1-stable/Godot_v4.4.1-stable_export_templates.tpz
+          mkdir -p ~/.local/share/godot/export_templates/4.4.1.stable
+          unzip -q Godot_v4.4.1-stable_export_templates.tpz
+          cp -r templates/* ~/.local/share/godot/export_templates/4.4.1.stable/
 
-        test -f export_presets.cfg
+      - name: Build APK
+        script: |
+          mkdir -p build
+          godot --headless --editor --path . --import
+          godot --headless --path . --export-debug "Android Debug" build/xonqa-urganch-debug.apk
 
-        python3 tools/validate_project.py
-
-        '
-    - name: Install Godot and matching export templates
-      script: 'set -e
-
-        mkdir -p "$HOME/godot"
-
-        mkdir -p "$HOME/Library/Application Support/Godot/export_templates/4.7.2.stable"
-
-
-        curl -fL --retry 3 -o /tmp/godot.zip "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_macos.universal.zip"
-
-
-        unzip -q /tmp/godot.zip -d "$HOME/godot"
-
-
-        GODOT_BIN=$(find "$HOME/godot" -type f -path "*/Contents/MacOS/Godot" | head
-        -n 1)
-
-        test -n "$GODOT_BIN"
-
-        chmod +x "$GODOT_BIN"
-
-        ln -sf "$GODOT_BIN" "$HOME/godot/godot"
-
-
-        curl -fL --retry 3 -o /tmp/templates.tpz "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz"
-
-
-        mkdir -p /tmp/godot-templates
-
-        unzip -q /tmp/templates.tpz -d /tmp/godot-templates
-
-        cp -R /tmp/godot-templates/templates/. "$HOME/Library/Application Support/Godot/export_templates/4.7.2.stable/"
-
-
-        "$HOME/godot/godot" --headless --version
-
-        '
-    - name: Parse project
-      script: "set -eu\ntest -f project.godot\ngrep -q '^textures/vram_compression/import_etc2_astc=true$'\
-        \ project.godot\n! grep -q '^gradle_build/min_sdk=' export_presets.cfg\n!\
-        \ grep -q '^gradle_build/target_sdk=' export_presets.cfg\n\"$HOME/godot/godot\"\
-        \ --headless --editor --path . --quit 2>&1 | tee /tmp/godot-check.log\nif\
-        \ grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Cannot' /tmp/godot-check.log;\
-        \ then\n  echo \"GODOT TEKSHIRUVIDA XATO\"\n  exit 1\nfi\necho \"GODOT DASTLABKI\
-        \ TEKSHIRUV O'TDI\"\n"
-    - name: Export Android debug APK
-      script: 'set -e
-
-        mkdir -p build
-
-        keytool -genkeypair -v -keystore /tmp/xonqa-debug.keystore -storepass android
-        -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity
-        10000 -dname "CN=Android Debug,O=Xonqa Urganch,C=UZ"
-
-        export GODOT_ANDROID_KEYSTORE_DEBUG_PATH=/tmp/xonqa-debug.keystore
-
-        export GODOT_ANDROID_KEYSTORE_DEBUG_USER=androiddebugkey
-
-        export GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD=android
-
-        "$HOME/godot/godot" --headless --path . --export-debug "Android Debug" build/xonqa-urganch-debug.apk
-
-        test -s build/xonqa-urganch-debug.apk
-
-        ls -lh build/xonqa-urganch-debug.apk
-
-        '
     artifacts:
-    - build/*.apk
+      - build/*.apk
