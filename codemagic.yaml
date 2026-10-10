@@ -2,7 +2,6 @@ workflows:
   android-godot:
     name: Xonqa Urganch Android APK
     max_build_duration: 60
-    instance_type: linux
     environment:
       vars:
         GODOT_VERSION: "4.4.1"
